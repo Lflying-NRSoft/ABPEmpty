@@ -10,20 +10,16 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  dockerId: hi50032370@aliyun.com
+  namespace: nrsoft
+  imageName: abpempty
+  registry: registry.cn-shanghai.aliyuncs.com/nrsoft/abpempty
+  dockerfilepath: ABPEmpty/Dockerfile
 
-stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/ABPEmpty/Dockerfile'
-        tags: |
-          $(tag)
+steps:
+  - script: |
+    docker build -f $(dockerfilepath) -t $(imageName) .
+    docker login -u $(dockerId) -p $(pwd) $(registry)
+    docker tag $(imageName) $(registry)/$(namespace)/$(imageName)
+    docker push $(registry)/$(namespace)/$(imageName)
+  displayName: push to aliyun
