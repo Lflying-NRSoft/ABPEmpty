@@ -1,25 +1,3 @@
-# Docker
-# Build a Docker image 
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
-trigger:
-- main
-
-resources:
-- repo: self
-
-variables:
-  dockerId: hi50032370@aliyun.com
-  namespace: nrsoft
-  imageName: abpempty
-  registry: registry.cn-shanghai.aliyuncs.com/nrsoft/abpempty
-  dockerfilepath: ABPEmpty/Dockerfile
-
-steps:
-  - script: |
-    docker build -f $(dockerfilepath) -t $(imageName) .
-    docker login -u $(dockerId) -p $(pwd) $(registry)
-    docker tag $(imageName) $(registry)/$(namespace)/$(imageName)
-    docker push $(registry)/$(namespace)/$(imageName)
-
-  displayName: push to aliyun
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
